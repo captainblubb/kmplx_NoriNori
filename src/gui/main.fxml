@@ -9,7 +9,7 @@
    <children>
       <HBox alignment="CENTER" prefHeight="0.0" prefWidth="0.0" spacing="20.0" style="-fx-background-color: lightgrey;">
          <children>
-            <Label fx:id="stepCounter" text="Steps: 0" />
+            <Label fx:id="generationCounter" text="Generation: 0" />
             <Button fx:id="startButton" mnemonicParsing="false" onAction="#startSimulation" text="Start" />
             <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stopSimulation" text="Stop"/>
             <Button fx:id="clearButton" mnemonicParsing="false" onAction="#clearSimulation" text="Clear" />
