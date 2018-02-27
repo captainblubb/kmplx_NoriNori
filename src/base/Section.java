@@ -12,6 +12,16 @@ public class Section {
         dominoCount = 0;
     }
 
+    public void increaseDominoCount(){
+        dominoCount++;
+    }
+
+    public void decreaseDominoCount(){
+        if(dominoCount>0) {
+            dominoCount--;
+        }
+    }
+
     public static int getIdCounter() {
         return idCounter;
     }

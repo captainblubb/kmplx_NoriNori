@@ -116,6 +116,8 @@ public class Cell extends javafx.scene.layout.Pane {
         if(isDominoSet==false) {
             dominoSecondCell = secondCell;
             isDominoSet = true;
+
+            setColor();
             return true;
         }
         return false;
@@ -126,7 +128,7 @@ public class Cell extends javafx.scene.layout.Pane {
             isDominoSet = false;
             return dominoSecondCell;
         }
-        throw new IllegalStateException("Cant remove Domino if no Domino set ! ");
+        throw new NullPointerException("Cant remove Domino if no Domino set ! ");
     }
 
     public boolean isDominoSet() {

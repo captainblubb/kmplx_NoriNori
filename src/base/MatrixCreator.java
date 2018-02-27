@@ -33,7 +33,7 @@ public class MatrixCreator {
     private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray){
 
         for(int i = 0; i<pointArray.size(); i++){
-
+            Section section = new Section();
             ArrayList<Cell> cellsThisSection = new ArrayList<>();
             for(int l = 0 ; l<pointArray.get(i).size();l++){
                 cellsThisSection.add(matrix[pointArray.get(i).get(l).x][pointArray.get(i).get(l).y]);
@@ -43,7 +43,7 @@ public class MatrixCreator {
                 Cell currentCell = cellsThisSection.get(k);
 
                 //Section
-                currentCell.setBelongsToSectionIndex(i);
+                currentCell.setSection(section);
 
                 //Gehört die Zelle links NICHT zu der Section ?
                 if(cellsThisSection.get(k).getRowPos()>0){
