@@ -1,15 +1,17 @@
 package base;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
+import java.awt.*;
+
 public class Cell extends javafx.scene.layout.Pane {
 
-    private int currentStateIndex = 0;
-    private CellColor currentCellColor = CellColor.WHITE;
-    private int belongsToSectionIndex = -1;
 
+    private Section section;
     private boolean isDominoSet = false;
+    private Cell dominoSecondCell;
 
     private int rowPos;
     private int colPos;
@@ -47,6 +49,17 @@ public class Cell extends javafx.scene.layout.Pane {
             return false;
         }
         return true;
+    }
+
+    public Section getSection() {
+        if(section!=null) {
+            return section;
+        }
+        throw new IllegalStateException("secion null in Cell.getSection()");
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
     }
 
     public boolean isDominoTopPlaceable(){
@@ -99,21 +112,25 @@ public class Cell extends javafx.scene.layout.Pane {
         return colPos;
     }
 
-    public int getCurrentStateIndex() {
-        return currentStateIndex;
+    public Boolean setDomino(Cell secondCell){
+        if(isDominoSet==false) {
+            dominoSecondCell = secondCell;
+            isDominoSet = true;
+            return true;
+        }
+        return false;
+    }
+
+    public Cell removeDomino() {
+        if (isDominoSet == false) {
+            isDominoSet = false;
+            return dominoSecondCell;
+        }
+        throw new IllegalStateException("Cant remove Domino if no Domino set ! ");
     }
 
     public boolean isDominoSet() {
         return isDominoSet;
-    }
-
-
-    public int getBelongsToSectionIndex() {
-        return belongsToSectionIndex;
-    }
-
-    public void setBelongsToSectionIndex(int belongsToSectionIndex) {
-        this.belongsToSectionIndex = belongsToSectionIndex;
     }
 
     public void setDominoSet(boolean dominoSet) {

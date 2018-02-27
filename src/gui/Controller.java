@@ -2,19 +2,21 @@ package gui;
 
 
 import base.Cell;
+import base.MatrixCreator;
 import eva.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import task.TaskData;
 
 import static configuration.Configuration.GRID_SIZE;
 import static configuration.Configuration.CELL_SIZE;
 
 public class Controller implements IController {
 
-    private int counter = 0;
+    private int generation = 0;
     private base.Cell[][] matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
     private EvaControl evaControl;
 
@@ -22,7 +24,7 @@ public class Controller implements IController {
     private GridPane grid;
 
     @FXML
-    private Label stepCounter;
+    private Label generationCounter;
 
     @FXML
     private Button stopButton;
@@ -35,11 +37,10 @@ public class Controller implements IController {
 
     public void initialize() {
         initGridConstraints();
-        initGridCells();
+        matrix = MatrixCreator.createMatrixFromTask();
+        setMatrixToGridCells(matrix);
 
     }
-
-
 
     private void initGridConstraints() {
         for (int i = 0; i < GRID_SIZE; i++) {
@@ -51,12 +52,11 @@ public class Controller implements IController {
         }
     }
 
-    private void initGridCells() {
+    private void setMatrixToGridCells(Cell[][] matrixInit) {
         grid.getChildren().clear();
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                matrix[i][j] = new base.Cell(i, j);
-                grid.add(matrix[i][j], i, j);
+                grid.add(matrixInit[i][j], i, j);
             }
         }
     }
@@ -66,7 +66,7 @@ public class Controller implements IController {
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
-        EvaControl evaControl = new EvaControl(this);
+        EvaControl evaControl = new EvaControl(this,matrix);
 
 
     }
@@ -80,29 +80,27 @@ public class Controller implements IController {
     }
 
 
-
     public base.Cell getCell(int rowPos, int colPos) {
         return matrix[colPos][rowPos];
     }
 
-    public void incStepCounter() {
-        counter++;
+    public void incGenerationCounter() {
+        generation++;
     }
 
-    public void updateCounterLabel() {
-        stepCounter.setText("Steps: " + counter);
+    public void updateGenerationLabel() {
+        generationCounter.setText("Steps: " + generation);
     }
 
     public GridPane getGrid() { return grid; }
 
     @FXML
     private void clearSimulation() {
-        counter = 0;
-        stepCounter.setText("Steps: " + counter);
+        generation = 0;
+        generationCounter.setText("Steps: " + generation);
         matrix = new Cell[GRID_SIZE][GRID_SIZE];
-        initGridCells();
+        setMatrixToGridCells(MatrixCreator.createMatrixFromTask());
         startButton.disableProperty().setValue(false);
-
     }
 
     public Cell[][] getMatrix() {
