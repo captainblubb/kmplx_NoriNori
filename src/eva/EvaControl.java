@@ -1,6 +1,7 @@
 package eva;
 
 import base.Cell;
+import base.MatrixCreator;
 import configuration.Configuration;
 import gui.Controller;
 import javafx.fxml.FXML;
@@ -22,6 +23,7 @@ public class EvaControl {
 
     public EvaControl(Controller controller){
         this.controller = controller;
+        matrix = MatrixCreator.createMatrixFromTask();
     }
 
     /*
