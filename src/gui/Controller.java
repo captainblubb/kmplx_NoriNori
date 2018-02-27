@@ -66,7 +66,7 @@ public class Controller implements IController {
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
-        EvaControl evaControl = new EvaControl(this,matrix);
+        EvaControl evaControl = new EvaControl(this);
 
 
     }
