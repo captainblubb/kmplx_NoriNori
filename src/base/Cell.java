@@ -67,8 +67,6 @@ public class Cell extends javafx.scene.layout.Pane {
         }
     }
 
-
-
     public int getRowPos() {
         return rowPos;
     }
