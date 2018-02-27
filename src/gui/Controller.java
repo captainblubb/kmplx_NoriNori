@@ -1,35 +1,31 @@
-package base;
+package gui;
 
 
-import configuration.Configuration;
-import javafx.application.Platform;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableListBase;
+import base.Cell;
+import eva.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static configuration.Configuration.GRID_SIZE;
 import static configuration.Configuration.CELL_SIZE;
 
-public class Controller {
+public class Controller implements IController {
 
     private int counter = 0;
-    private int currentSpeed = 1000;
-    private Cell[][] matrix = new Cell[GRID_SIZE][GRID_SIZE];
+    private base.Cell[][] matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
+    private EvaControl evaControl;
 
     @FXML
     private GridPane grid;
 
     @FXML
     private Label stepCounter;
+
+    @FXML
+    private Button stopButton;
 
     @FXML
     private Button startButton;
@@ -40,7 +36,7 @@ public class Controller {
     public void initialize() {
         initGridConstraints();
         initGridCells();
-        repaintGridLines();
+
     }
 
 
@@ -59,7 +55,7 @@ public class Controller {
         grid.getChildren().clear();
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
-                matrix[i][j] = new Cell(i, j);
+                matrix[i][j] = new base.Cell(i, j);
                 grid.add(matrix[i][j], i, j);
             }
         }
@@ -67,9 +63,10 @@ public class Controller {
 
     @FXML
     private void startSimulation() {
-
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
+
+        EvaControl evaControl = new EvaControl(this);
 
 
     }
@@ -84,12 +81,7 @@ public class Controller {
 
 
 
-    public void repaintGridLines() {
-      /*  grid.setGridLinesVisible(false);
-        grid.setGridLinesVisible(true); */
-    }
-
-    public Cell getCell(int rowPos, int colPos) {
+    public base.Cell getCell(int rowPos, int colPos) {
         return matrix[colPos][rowPos];
     }
 
@@ -109,17 +101,11 @@ public class Controller {
         stepCounter.setText("Steps: " + counter);
         matrix = new Cell[GRID_SIZE][GRID_SIZE];
         initGridCells();
-        updateArrowDirection();
-        repaintGridLines();
         startButton.disableProperty().setValue(false);
 
     }
 
-    @FXML
-    private void updateArrowDirection() {
-        Platform.runLater(() -> {
-
-        });
+    public Cell[][] getMatrix() {
+        return matrix;
     }
-
 }
