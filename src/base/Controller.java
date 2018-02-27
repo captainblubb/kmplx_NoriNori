@@ -68,9 +68,6 @@ public class Controller {
     @FXML
     private void startSimulation() {
 
-        Cell cell =matrix[5][5];
-        cell.drawBorder(11, 11, 1, 1);
-
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
