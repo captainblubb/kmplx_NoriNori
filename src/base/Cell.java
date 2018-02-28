@@ -20,7 +20,7 @@ public class Cell extends javafx.scene.layout.Pane {
 
     public Cell(int rowPos, int colPos ) {
         super();
-        super.setStyle("-fx-background-color: lightgray");
+        super.setStyle("-fx-background-color: lightgray;");
         drawBorder(1,1,1,1);
         this.colPos = colPos;
         this.rowPos = rowPos;
@@ -35,6 +35,10 @@ public class Cell extends javafx.scene.layout.Pane {
             bottomBorder=bottom;
             leftBorder=left;
         }
+    }
+
+    public Cell getDominoSecondCell() {
+        return dominoSecondCell;
     }
 
     public boolean isDominoLeftPlaceable(){
@@ -113,10 +117,10 @@ public class Cell extends javafx.scene.layout.Pane {
     }
 
     public Boolean setDomino(Cell secondCell){
-        if(isDominoSet==false) {
+        if(!isDominoSet && 1==(Math.abs((secondCell.getColPos()+secondCell.getRowPos()-(colPos+rowPos))))) {
             dominoSecondCell = secondCell;
             isDominoSet = true;
-
+            section.increaseDominoCount();
             setColor();
             return true;
         }
@@ -124,11 +128,13 @@ public class Cell extends javafx.scene.layout.Pane {
     }
 
     public Cell removeDomino() {
-        if (isDominoSet == false) {
+        if (isDominoSet) {
             isDominoSet = false;
+            section.decreaseDominoCount();
+            setColor();
             return dominoSecondCell;
         }
-        throw new NullPointerException("Cant remove Domino if no Domino set ! ");
+        return null;
     }
 
     public boolean isDominoSet() {
@@ -141,7 +147,8 @@ public class Cell extends javafx.scene.layout.Pane {
 
     private void setColor(){
         if(isDominoSet) {
-            super.setStyle("-fx-background-color: black");
+            super.setStyle("-fx-background-color: Red");
+            // super.setStyle("-fx-background-image: url('/resouces/Domino.png')");
         }else{
             super.setStyle("-fx-background-color: lightgray");
         }

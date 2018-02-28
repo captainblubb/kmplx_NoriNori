@@ -3,6 +3,15 @@ package base;
 public class Section {
 
     private static int idCounter;
+
+    public int getSectionID() {
+        return sectionID;
+    }
+
+    public void setSectionID(int sectionID) {
+        this.sectionID = sectionID;
+    }
+
     private int sectionID;
     private int dominoCount;
 
@@ -33,5 +42,7 @@ public class Section {
     public void setDominoCount(int dominoCount) {
         dominoCount = dominoCount;
     }
+
+
 
 }

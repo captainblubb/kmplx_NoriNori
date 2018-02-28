@@ -1,6 +1,7 @@
 package base;
 
 import configuration.Configuration;
+import eva.Selection;
 import task.TaskData;
 
 import java.awt.*;
@@ -11,6 +12,7 @@ import static configuration.Configuration.GRID_SIZE;
 public class MatrixCreator {
 
     static Cell[][] matrix;
+    static ArrayList<Section> sections;
 
 
     public static Cell[][] createMatrixFromTask(){
@@ -27,13 +29,17 @@ public class MatrixCreator {
         return matrix;
     }
 
-
-
+    public static ArrayList<Section> getSectionsOfLastMatrix() {
+        return sections;
+    }
 
     private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray){
 
+        sections = new ArrayList<>();
         for(int i = 0; i<pointArray.size(); i++){
+
             Section section = new Section();
+            sections.add(section);
             ArrayList<Cell> cellsThisSection = new ArrayList<>();
             for(int l = 0 ; l<pointArray.get(i).size();l++){
                 cellsThisSection.add(matrix[pointArray.get(i).get(l).x][pointArray.get(i).get(l).y]);

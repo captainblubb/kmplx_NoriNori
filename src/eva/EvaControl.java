@@ -23,7 +23,20 @@ public class EvaControl {
 
     public EvaControl(Controller controller){
         this.controller = controller;
-        matrix = MatrixCreator.createMatrixFromTask();
+        Solution solution = new Solution();
+        controller.setMatrixToGridCells(solution.getMatrix());
+        solution.calculateFitness();
+        System.out.println(solution.getFitness());
+        System.out.println("done");
+        solution.calculateChromosom();
+        System.out.println(solution.chromosomToString());
+        int[][] TestClearBySetMatrix = new int[Configuration.GRID_SIZE][Configuration.GRID_SIZE];
+        TestClearBySetMatrix[0][0] = 1;
+        TestClearBySetMatrix[0][1] = 1;
+        solution.placeDominosByChromaMatrix(TestClearBySetMatrix);
+        solution.calculateFitness();
+        System.out.println(solution.getFitness());
+
     }
 
     /*
