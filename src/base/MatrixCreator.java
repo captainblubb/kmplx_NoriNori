@@ -1,6 +1,7 @@
 package base;
 
 import configuration.Configuration;
+import eva.Selection;
 import task.TaskData;
 
 import java.awt.*;
@@ -10,30 +11,35 @@ import static configuration.Configuration.GRID_SIZE;
 
 public class MatrixCreator {
 
-    static Cell[][] matrix;
+
+    static ArrayList<Section> sections;
 
 
     public static Cell[][] createMatrixFromTask(){
 
-        matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
+        Cell[][]  matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 matrix[i][j] = new base.Cell(i, j);
 
             }
         }
-        setMatrixWithTaskData(TaskData.getSectionsForTask());
+        setMatrixWithTaskData(TaskData.getSectionsForTask(),matrix);
 
         return matrix;
     }
 
+    public static ArrayList<Section> getSectionsOfLastMatrix() {
+        return sections;
+    }
 
+    private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray, Cell[][] matrix){
 
-
-    private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray){
-
+        sections = new ArrayList<>();
         for(int i = 0; i<pointArray.size(); i++){
+
             Section section = new Section();
+            sections.add(section);
             ArrayList<Cell> cellsThisSection = new ArrayList<>();
             for(int l = 0 ; l<pointArray.get(i).size();l++){
                 cellsThisSection.add(matrix[pointArray.get(i).get(l).x][pointArray.get(i).get(l).y]);
@@ -83,6 +89,8 @@ public class MatrixCreator {
             }
 
         }
+
+        Configuration.instance.AmountOfSections = sections.size();
 
     }
 }

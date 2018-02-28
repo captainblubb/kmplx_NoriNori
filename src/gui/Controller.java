@@ -18,6 +18,7 @@ public class Controller implements IController {
 
     private int generation = 0;
     private base.Cell[][] matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
+    private Thread evaThread;
     private EvaControl evaControl;
 
     @FXML
@@ -52,7 +53,7 @@ public class Controller implements IController {
         }
     }
 
-    private void setMatrixToGridCells(Cell[][] matrixInit) {
+    public void setMatrixToGridCells(Cell[][] matrixInit) {
         grid.getChildren().clear();
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
@@ -66,16 +67,17 @@ public class Controller implements IController {
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
-        EvaControl evaControl = new EvaControl(this);
 
+        EvaControl evaControl = new EvaControl(this);
+        evaThread = new Thread(evaControl);
+        evaThread.start();
 
     }
 
     @FXML
     public void stopSimulation() {
-        //  antThread.interrupt();
-       // stopButton.disableProperty().setValue(true);
-       // heatMapButton.disableProperty().setValue(false);
+        evaThread.interrupt();
+        stopButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(false);
     }
 
@@ -85,11 +87,12 @@ public class Controller implements IController {
     }
 
     public void incGenerationCounter() {
-        generation++;
+        this.generation++;
+        updateGenerationLabel();
     }
 
     public void updateGenerationLabel() {
-        generationCounter.setText("Steps: " + generation);
+        generationCounter.setText("Generation: " + generation);
     }
 
     public GridPane getGrid() { return grid; }
@@ -97,7 +100,7 @@ public class Controller implements IController {
     @FXML
     private void clearSimulation() {
         generation = 0;
-        generationCounter.setText("Steps: " + generation);
+        generationCounter.setText("Generation: " + generation);
         matrix = new Cell[GRID_SIZE][GRID_SIZE];
         setMatrixToGridCells(MatrixCreator.createMatrixFromTask());
         startButton.disableProperty().setValue(false);
