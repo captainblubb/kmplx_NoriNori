@@ -12,6 +12,7 @@ public enum Configuration {
     public static final int MutationChanceTotal = 1000;
 
     public static final int Selection_CountOfSelections = 20;
+    public static final int Turnament_Survivers = 25;
 
     public int AmountOfSections=21;
 

@@ -15,15 +15,7 @@ public class Selection {
             solutions.get(i).calculateFitness();
         }
 
-        //Sortieren
-        for (int k =0; k<(solutions.size()/2+1);k++) {
-            for (int i = solutions.size() - 1; i >= 0; i++) {
-                if (!solutions.get(i).isFitnessHigherCompare(solutions.get(i + 1))) {
-                    Solution swap = solutions.remove(i);
-                    solutions.add(i + 1, swap);
-                }
-            }
-        }
+        solutions= SolutionSorter.sortSolutionsBubble(solutions);
 
         //SELEKTION
         int countOfPairsToSelect =Configuration.Selection_CountOfSelections;
