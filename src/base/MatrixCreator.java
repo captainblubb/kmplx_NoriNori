@@ -11,20 +11,20 @@ import static configuration.Configuration.GRID_SIZE;
 
 public class MatrixCreator {
 
-    static Cell[][] matrix;
+
     static ArrayList<Section> sections;
 
 
     public static Cell[][] createMatrixFromTask(){
 
-        matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
+        Cell[][]  matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 matrix[i][j] = new base.Cell(i, j);
 
             }
         }
-        setMatrixWithTaskData(TaskData.getSectionsForTask());
+        setMatrixWithTaskData(TaskData.getSectionsForTask(),matrix);
 
         return matrix;
     }
@@ -33,7 +33,7 @@ public class MatrixCreator {
         return sections;
     }
 
-    private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray){
+    private static void setMatrixWithTaskData(ArrayList<ArrayList<Point>> pointArray, Cell[][] matrix){
 
         sections = new ArrayList<>();
         for(int i = 0; i<pointArray.size(); i++){

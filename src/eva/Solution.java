@@ -18,9 +18,13 @@ public class Solution {
 
     public Solution() {
         chromaMatrix= new int[Configuration.GRID_SIZE][Configuration.GRID_SIZE];
+        this.fitness = 0;
         matrix = MatrixCreator.createMatrixFromTask();
         sections = MatrixCreator.getSectionsOfLastMatrix();
-        this.fitness = 0;
+        placeRandomDominos();
+        calculateChromosom();
+        calculateFitness();
+
         initRandomDominos();
     }
 
@@ -65,6 +69,7 @@ public class Solution {
     public int[][] getChromaMatrix() {
         return chromaMatrix;
     }
+
     public int getFitness() {
         return fitness;
     }
@@ -146,7 +151,9 @@ public class Solution {
                         }
                     }
 
-                    fitnessValue += (20) * (3 - otherDominosNextTo);
+                    if(otherDominosNextTo == 0 ){
+                        fitnessValue+=100;
+                    }
                 }
             }
         }
@@ -226,5 +233,12 @@ public class Solution {
         return false;
     }
 
+    public String toString(){
+        String str= "";
+
+        System.out.println("Fitness: "+fitness+" Matrix"+chromosomToString());
+
+        return str;
+    }
 }
 

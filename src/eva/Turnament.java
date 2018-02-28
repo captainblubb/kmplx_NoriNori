@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class Turnament {
 
-    public void rankTournament(ArrayList<Solution> solutions){
-
+    public ArrayList<Solution> rankTournament(ArrayList<Solution> solutions){
+        System.out.println("Turnament");
         //Fitness aktualisieren
         for(int i = 0; i<solutions.size();i++){
             solutions.get(i).calculateFitness();
@@ -17,16 +17,18 @@ public class Turnament {
         solutions= SolutionSorter.sortSolutionsBubble(solutions);
 
         //SELEKTION
-        int countOfPairsToSelect = Configuration.Turnament_Survivers;
-        if (solutions.size()<countOfPairsToSelect){
+        int countOfTurnamentSurvivors = Configuration.Turnament_Survivers;
+        if (solutions.size()<countOfTurnamentSurvivors){
             if (solutions.size()>1) {
-                countOfPairsToSelect = solutions.size();
+                countOfTurnamentSurvivors = solutions.size();
             }
         }
 
-        ArrayList<ArrayList<Solution>> Survivors = new ArrayList<ArrayList<Solution>>();
-        for(int i = 0; i< countOfPairsToSelect;i+=2){
-
+        ArrayList<Solution> survivors = new ArrayList<Solution>();
+        for(int i = 0; i< countOfTurnamentSurvivors;i++){
+            survivors.add(solutions.get(i));
         }
+
+        return survivors;
     }
 }

@@ -4,26 +4,35 @@ import base.Cell;
 import base.MatrixCreator;
 import configuration.Configuration;
 import gui.Controller;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import task.TaskData;
 
 import java.awt.*;
 import java.util.ArrayList;
 
-public class EvaControl {
+public class EvaControl implements Runnable{
 
-    Crossover crossover;
-    Mutation mutation;
-    Turnament turnament;
-    Selection selection;
-    Cell[][] matrix;
-    ArrayList<ArrayList<Point>> taskData;
-    Controller controller;
+   private Crossover crossover;
+   private Mutation mutation;
+   private Turnament turnament;
+   private Selection selection;
+   private Cell[][] matrix;
+   private int highestFiness;
+   private Controller controller;
+   private ArrayList<Solution> population;
+   private Thread evaThread;
 
 
     public EvaControl(Controller controller){
         this.controller = controller;
-        Solution solution = new Solution();
+        crossover = new Crossover();
+        mutation= new Mutation();
+        turnament = new Turnament();
+        selection = new Selection();
+        this.population = initPopulation();
+
+        /*Solution solution = new Solution();
         controller.setMatrixToGridCells(solution.getMatrix());
         solution.calculateFitness();
         System.out.println(solution.getFitness());
@@ -36,6 +45,75 @@ public class EvaControl {
         solution.placeDominosByChromaMatrix(TestClearBySetMatrix);
         solution.calculateFitness();
         System.out.println(solution.getFitness());
+        */
+    }
+
+
+
+
+
+
+    @Override
+    public void run(){
+        try{
+            evaThread = Thread.currentThread();
+            while (!Thread.currentThread().isInterrupted()) {
+                Platform.runLater(() -> {
+
+                    System.out.println("Start EVA");
+
+                        System.out.println("popoluation stand " +population.size());
+                        //Selektieren -> kreuzen
+                        this.population.addAll( crossover.Crossover(selection.Selection(this.population)));
+                        mutation.mutatePopoluation(population);
+                        population= turnament.rankTournament(population);
+                        updateControllerGridWithBestFitnessSolution();
+                        controller.incGenerationCounter();
+
+                });Thread.sleep(Configuration.Threadsleeptime);
+            }
+         }catch (InterruptedException e) {
+            System.out.println("e");
+            Thread.currentThread().interrupt();
+            stopEvaThread();
+        }
+    }
+
+    private void stopEvaThread() {
+        evaThread.interrupt();
+        controller.stopSimulation();
+    }
+
+    private void updateControllerGridWithBestFitnessSolution(){
+        int bestFitness=0;
+        int bestFitnessIndex =0;
+        for(int i = 0; i<population.size();i++){
+           if(population.get(i).getFitness()>bestFitness){
+               bestFitness = population.get(i).getFitness();
+               bestFitnessIndex=i;
+           }
+        }
+        controller.setMatrixToGridCells(population.get(bestFitnessIndex).getMatrix());
+    }
+
+    private ArrayList<Solution> initPopulation(){
+
+        ArrayList<Solution> newPopoluation = new ArrayList<>();
+
+        for (int i = 0; i<Configuration.initialPopolution;i++){
+            Solution solution= new Solution();
+            newPopoluation.add(solution);
+        }
+
+        return newPopoluation;
+    }
+
+    private int getHighestFitness(){
+        int bestFitness=0;
+        for(int i = 0; i<population.size();i++){
+            bestFitness = bestFitness<population.get(i).getFitness() ? population.get(i).getFitness() : bestFitness;
+        }
+        return bestFitness;
     }
 
     /*

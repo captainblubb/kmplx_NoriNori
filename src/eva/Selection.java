@@ -8,7 +8,7 @@ public class Selection {
 
 
     public ArrayList<ArrayList<Solution>> Selection( ArrayList<Solution> solutions){
-
+        System.out.println("start Selection");
 
         //Fitness aktualisieren
         for(int i = 0; i<solutions.size();i++){

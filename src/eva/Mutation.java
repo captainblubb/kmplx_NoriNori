@@ -3,9 +3,11 @@ package eva;
 import configuration.Configuration;
 import configuration.MersenneTwister;
 
+import java.util.ArrayList;
+
 public class Mutation {
 
-    public int[][] placeSingleDominoNew(int[][] parent1){
+    private int[][] placeSingleDominoNew(int[][] parent1){
         MersenneTwister mt = new MersenneTwister();
 
         int mutationRandom = mt.nextInt(0, Configuration.MutationChanceTotal);
@@ -13,9 +15,9 @@ public class Mutation {
         if(mutationRandom<=Configuration.MutationChance);{
 
             boolean isMutated = false;
-            while(!isMutated){
+            boolean isDominoToMutateFound = false;
 
-                boolean isDominoToMutateFound = false;
+            while(!isMutated){
                 int x = mt.nextInt(0,Configuration.GRID_SIZE);
                 int y = mt.nextInt(0,Configuration.GRID_SIZE);
                 int dominoIndex =0;
@@ -32,19 +34,19 @@ public class Mutation {
                         dominoIndex=parent1[x][y];
                         isDominoToMutateFound=true;
                         parent1[x][y] = 0;
-                        parent1[x - 1][y] = 0;
+                        parent1[x+1][y] = 0;
 
                     } else if (y > 0 && parent1[x][y - 1] == parent1[x][y]) {
                         dominoIndex=parent1[x][y];
                         isDominoToMutateFound=true;
                         parent1[x][y] = 0;
-                        parent1[x - 1][y] = 0;
+                        parent1[x][y-1] = 0;
 
                     } else if (y < (Configuration.GRID_SIZE - 1) && parent1[x][y + 1] == parent1[x][y + 1]) {
                         dominoIndex=parent1[x][y];
                         isDominoToMutateFound=true;
                         parent1[x][y] = 0;
-                        parent1[x - 1][y] = 0;
+                        parent1[x][y+1] = 0;
                     }
 
                 }
@@ -58,25 +60,25 @@ public class Mutation {
                         if (xx > 0 && parent1[xx - 1][yy] == parent1[xx][yy]) {
                             parent1[xx][yy] = dominoIndex;
                             parent1[xx - 1][yy] = dominoIndex;
-                            isDominoToMutateFound=true;
+                            isDominoToMutateFound=false;
                             isMutated=true;
 
-                        } else if (xx < (Configuration.GRID_SIZE - 1) && parent1[xx + 1][yy] == parent1[x][yy]) {
+                        } else if (xx < (Configuration.GRID_SIZE - 1) && parent1[xx + 1][yy] == parent1[xx][yy]) {
                             parent1[xx][yy] = dominoIndex;
-                            parent1[xx- 1][yy] = dominoIndex;
-                            isDominoToMutateFound=true;
+                            parent1[xx+1][yy] = dominoIndex;
+                            isDominoToMutateFound=false;
                             isMutated=true;
 
                         } else if (yy > 0 && parent1[xx][yy - 1] == parent1[xx][yy]) {
                             parent1[xx][yy] = dominoIndex;
-                            parent1[xx - 1][yy] = dominoIndex;
-                            isDominoToMutateFound=true;
+                            parent1[xx][yy-1] = dominoIndex;
+                            isDominoToMutateFound=false;
                             isMutated=true;
 
                         } else if (yy < (Configuration.GRID_SIZE - 1) && parent1[xx][yy + 1] == parent1[xx][yy + 1]) {
                             parent1[xx][yy] = dominoIndex;
-                            parent1[xx - 1][yy] = dominoIndex;
-                            isDominoToMutateFound=true;
+                            parent1[xx][yy+1] = dominoIndex;
+                            isDominoToMutateFound=false;
                             isMutated=true;
                         }
                     }
@@ -84,5 +86,14 @@ public class Mutation {
             }
         }
         return parent1;
+    }
+
+    public ArrayList<Solution> mutatePopoluation(ArrayList<Solution> solutions){
+        System.out.println("start mutation");
+        for(int i = 0; i<solutions.size();i++){
+            solutions.get(i).placeDominosByChromaMatrix(placeSingleDominoNew(solutions.get(i).getChromaMatrix()));
+            solutions.get(i).calculateFitness();
+        }
+        return solutions;
     }
 }
