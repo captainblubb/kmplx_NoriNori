@@ -36,7 +36,6 @@ public class EvaControl {
         solution.placeDominosByChromaMatrix(TestClearBySetMatrix);
         solution.calculateFitness();
         System.out.println(solution.getFitness());
-
     }
 
     /*

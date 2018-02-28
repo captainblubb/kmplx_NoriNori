@@ -90,5 +90,7 @@ public class MatrixCreator {
 
         }
 
+        Configuration.instance.AmountOfSections = sections.size();
+
     }
 }

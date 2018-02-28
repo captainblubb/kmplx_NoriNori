@@ -218,5 +218,13 @@ public class Solution {
             }
         }
     }
+
+    public boolean isFitnessHigherCompare(Solution solution){
+        if(solution.getFitness()>fitness){
+            return true;
+        }
+        return false;
+    }
+
 }
 
