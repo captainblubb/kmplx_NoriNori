@@ -12,6 +12,7 @@ public class Section {
         this.sectionID = sectionID;
     }
 
+    private int cellsThisSection;
     private int sectionID;
     private int dominoCount;
 
@@ -19,6 +20,15 @@ public class Section {
         idCounter++;
         sectionID= idCounter;
         dominoCount = 0;
+        cellsThisSection=0;
+    }
+
+    public void incCellsThisSection(){
+        cellsThisSection++;
+    }
+
+    public int getCellsThisSection() {
+        return cellsThisSection;
     }
 
     public void increaseDominoCount(){

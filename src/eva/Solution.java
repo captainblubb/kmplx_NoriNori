@@ -15,6 +15,7 @@ public class Solution {
     private int[][] chromaMatrix;
     private Cell[][] matrix;
     private ArrayList<Section> sections;
+    private boolean solved = false;
 
     public Solution() {
         chromaMatrix= new int[Configuration.GRID_SIZE][Configuration.GRID_SIZE];
@@ -25,11 +26,14 @@ public class Solution {
         calculateChromosom();
         calculateFitness();
 
-        initRandomDominos();
     }
 
     public void placeRandomDominos(){
         initRandomDominos();
+    }
+
+    public boolean getIsSolved(){
+        return solved;
     }
 
     public void placeDominosByChromaMatrix(int[][] newChromaMatrix){
@@ -109,11 +113,18 @@ public class Solution {
 
     public void calculateFitness() {
         int fitnessValue = 0;
+        solved= true;
 
         // Pro Section = 2 Domino +50 Fitness
         for (int sectionIndex = 0; sectionIndex < sections.size(); sectionIndex++) {
             if (sections.get(sectionIndex).getDominoCount() == 2) {
-                fitnessValue += 50;
+                fitnessValue += 77;
+                if(sections.get(sectionIndex).getCellsThisSection() ==2){
+                    fitnessValue+=50;
+                }
+            }else {
+                fitnessValue-= Math.abs(sections.get(sectionIndex).getDominoCount()-2)*50;
+                solved=false;
             }
         }
 
@@ -152,7 +163,10 @@ public class Solution {
                     }
 
                     if(otherDominosNextTo == 0 ){
-                        fitnessValue+=100;
+                        fitnessValue+=34;
+                    }else{
+                        fitnessValue-=otherDominosNextTo*19;
+                        solved=false;
                     }
                 }
             }
@@ -165,6 +179,7 @@ public class Solution {
         MersenneTwister mt = new MersenneTwister();
         int dominoCounter = 0;
         while (dominoCounter < sections.size()) {
+
             int x = mt.nextInt(0, Configuration.GRID_SIZE);
             int y = mt.nextInt(0, Configuration.GRID_SIZE);
             Cell currentCell = matrix[x][y];

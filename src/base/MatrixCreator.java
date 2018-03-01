@@ -50,6 +50,7 @@ public class MatrixCreator {
 
                 //Section
                 currentCell.setSection(section);
+                section.incCellsThisSection();
 
                 //Gehört die Zelle links NICHT zu der Section ?
                 if(cellsThisSection.get(k).getRowPos()>0){

@@ -12,7 +12,9 @@ public class Mutation {
 
         int mutationRandom = mt.nextInt(0, Configuration.MutationChanceTotal);
 
-        if(mutationRandom<=Configuration.MutationChance);{
+        if(mutationRandom<=Configuration.MutationChance){
+
+            System.out.println("########################## MUTATIONSTARTx ################################################# ");
 
             boolean isMutated = false;
             boolean isDominoToMutateFound = false;
@@ -88,7 +90,7 @@ public class Mutation {
         return parent1;
     }
 
-    public ArrayList<Solution> mutatePopoluation(ArrayList<Solution> solutions){
+    public ArrayList<Solution> mutatePopoluationSingleDominoNew(ArrayList<Solution> solutions){
         System.out.println("start mutation");
         for(int i = 0; i<solutions.size();i++){
             solutions.get(i).placeDominosByChromaMatrix(placeSingleDominoNew(solutions.get(i).getChromaMatrix()));

@@ -12,7 +12,6 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("../gui/main.fxml"));
-        primaryStage.getIcons().add(new Image("file:res/antIcon.png"));
         primaryStage.setTitle("NoriNori solver");
         primaryStage.setScene(new Scene(root, 750, 797));
         primaryStage.setResizable(false);

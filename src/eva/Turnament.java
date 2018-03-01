@@ -24,10 +24,23 @@ public class Turnament {
             }
         }
 
+        for (int i = 0; i<solutions.size();i++){
+            System.out.print(" "+solutions.get(i).getFitness());
+        }
+        System.out.println();
+
         ArrayList<Solution> survivors = new ArrayList<Solution>();
-        for(int i = 0; i< countOfTurnamentSurvivors;i++){
+        survivors.add(solutions.get(0));
+        survivors.add(solutions.get(1));
+        survivors.add(solutions.get(2));
+        for(int i = 2; i< countOfTurnamentSurvivors;i++){
             survivors.add(solutions.get(i));
         }
+
+        for (int i = 0; i<survivors.size();i++){
+            System.out.print(" "+survivors.get(i).getFitness());
+        }
+        System.out.println();
 
         return survivors;
     }
