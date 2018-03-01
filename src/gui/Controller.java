@@ -67,10 +67,10 @@ public class Controller implements IController {
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
-
         EvaControl evaControl = new EvaControl(this);
         evaThread = new Thread(evaControl);
         evaThread.start();
+
 
     }
 
@@ -80,7 +80,6 @@ public class Controller implements IController {
         stopButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(false);
     }
-
 
     public base.Cell getCell(int rowPos, int colPos) {
         return matrix[colPos][rowPos];

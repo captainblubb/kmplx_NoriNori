@@ -1,14 +1,10 @@
 package eva;
 
 import base.Cell;
-import base.MatrixCreator;
 import configuration.Configuration;
 import gui.Controller;
 import javafx.application.Platform;
-import javafx.fxml.FXML;
-import task.TaskData;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class EvaControl implements Runnable{
@@ -22,6 +18,7 @@ public class EvaControl implements Runnable{
    private Controller controller;
    private ArrayList<Solution> population;
    private Thread evaThread;
+   private int counter = 0;
 
 
     public EvaControl(Controller controller){
@@ -51,8 +48,6 @@ public class EvaControl implements Runnable{
 
 
 
-
-
     @Override
     public void run(){
         try{
@@ -60,24 +55,39 @@ public class EvaControl implements Runnable{
             while (!Thread.currentThread().isInterrupted()) {
                 Platform.runLater(() -> {
 
-                    System.out.println("Start EVA");
 
-                        System.out.println("popoluation stand " +population.size());
+
+                       System.out.println("Start EVA");
+
+                        for (int i = 0; i < population.size(); i++) {
+                            if (population.get(i).getIsSolved()) {
+                                controller.setMatrixToGridCells(population.get(i).getMatrix());
+                                System.out.println("SOLVED");
+                                stopEvaThread();
+                            }
+                        }
+
+
+                        System.out.println("Popoluation stand " + population.size());
                         //Selektieren -> kreuzen
-                        this.population.addAll( crossover.Crossover(selection.Selection(this.population)));
-                        mutation.mutatePopoluation(population);
-                        population= turnament.rankTournament(population);
+                        this.population.addAll(crossover.Crossover(selection.selectionOfTheBest(this.population)));
+                        mutation.mutatePopoluationSingleDominoNew(population);
+                        population = turnament.rankTournament(population);
                         updateControllerGridWithBestFitnessSolution();
                         controller.incGenerationCounter();
 
                 });Thread.sleep(Configuration.Threadsleeptime);
             }
          }catch (InterruptedException e) {
-            System.out.println("e");
+            System.out.println(e);
             Thread.currentThread().interrupt();
             stopEvaThread();
         }
     }
+
+
+
+
 
     private void stopEvaThread() {
         evaThread.interrupt();
@@ -93,6 +103,9 @@ public class EvaControl implements Runnable{
                bestFitnessIndex=i;
            }
         }
+        System.out.println("#########################################");
+        System.out.println("BEST FITNES:::"+bestFitness);
+        System.out.println("#########################################");
         controller.setMatrixToGridCells(population.get(bestFitnessIndex).getMatrix());
     }
 
