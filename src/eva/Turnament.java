@@ -1,16 +1,21 @@
 package eva;
 
 import configuration.Configuration;
+import configuration.MersenneTwister;
 
 import java.util.ArrayList;
 
 public class Turnament {
 
     public ArrayList<Solution> rankTournament(ArrayList<Solution> solutions){
-        System.out.println("Turnament");
+
+        MersenneTwister mt = new MersenneTwister();
+
+        int sumOfFitness =0;
         //Fitness aktualisieren
         for(int i = 0; i<solutions.size();i++){
             solutions.get(i).calculateFitness();
+            sumOfFitness+=solutions.get(i).getFitness();
         }
 
         //Sortieren
@@ -19,28 +24,20 @@ public class Turnament {
         //SELEKTION
         int countOfTurnamentSurvivors = Configuration.Turnament_Survivers;
         if (solutions.size()<countOfTurnamentSurvivors){
-            if (solutions.size()>1) {
                 countOfTurnamentSurvivors = solutions.size();
+        }
+
+
+        ArrayList<Solution> survivors = new ArrayList<Solution>();
+
+        while (survivors.size() < countOfTurnamentSurvivors) {
+            for (int i = 0; i < (solutions.size() - 1); i++) {
+                if (solutions.get(i).getFitness() * 5 >= mt.nextInt(0, sumOfFitness)) {
+                    survivors.add(solutions.get(i));
+                }
             }
         }
 
-        for (int i = 0; i<solutions.size();i++){
-            System.out.print(" "+solutions.get(i).getFitness());
-        }
-        System.out.println();
-
-        ArrayList<Solution> survivors = new ArrayList<Solution>();
-        survivors.add(solutions.get(0));
-        survivors.add(solutions.get(1));
-        survivors.add(solutions.get(2));
-        for(int i = 2; i< countOfTurnamentSurvivors;i++){
-            survivors.add(solutions.get(i));
-        }
-
-        for (int i = 0; i<survivors.size();i++){
-            System.out.print(" "+survivors.get(i).getFitness());
-        }
-        System.out.println();
 
         return survivors;
     }

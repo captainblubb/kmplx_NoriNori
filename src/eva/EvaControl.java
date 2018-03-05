@@ -1,11 +1,13 @@
 package eva;
 
 import base.Cell;
+import base.MatrixCreator;
 import configuration.Configuration;
 import gui.Controller;
 import javafx.application.Platform;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class EvaControl implements Runnable{
 
@@ -56,27 +58,38 @@ public class EvaControl implements Runnable{
                 Platform.runLater(() -> {
 
 
-
-                       System.out.println("Start EVA");
-
                         for (int i = 0; i < population.size(); i++) {
                             if (population.get(i).getIsSolved()) {
                                 controller.setMatrixToGridCells(population.get(i).getMatrix());
-                                System.out.println("SOLVED");
                                 stopEvaThread();
                             }
                         }
+                        // Selektieren -> kreuzen
+                        if(counter == 0) {
+                            this.population.addAll(crossover.crossoverKCuts(selection.selectionOfTheBestWithProbability(this.population)));
+                            counter =1;
+                        }else if(counter == 1)
+                        {
+                            this.population.addAll(crossover.crossOverUniform(selection.selectionOfTheBestWithProbability(this.population)));
+                            counter=2;
+                        }else if(counter ==2){
+                            this.population.addAll(crossover.crossOverUniform(selection.selectionOfTheBestWithProbability(this.population)));
+                            counter=3;
+                        }else if(counter==3){
+                            this.population.addAll(crossover.crossOverUniform(selection.selectionOfTheBestWithProbability(this.population)));
+                            counter=0;
+                        }
 
-
-                        System.out.println("Popoluation stand " + population.size());
-                        //Selektieren -> kreuzen
-                        this.population.addAll(crossover.Crossover(selection.selectionOfTheBest(this.population)));
-                        mutation.mutatePopoluationSingleDominoNew(population);
+                        mutation.mutatePopolationPlaceNewDomino(population);
+                        mutation.mutatePopoluationSingleDominoReplaced(population);
+                        mutation.mutatePopulationRemoveDomino(population);
                         population = turnament.rankTournament(population);
                         updateControllerGridWithBestFitnessSolution();
                         controller.incGenerationCounter();
 
-                });Thread.sleep(Configuration.Threadsleeptime);
+
+                });
+                Thread.sleep(Configuration.Threadsleeptime);
             }
          }catch (InterruptedException e) {
             System.out.println(e);
@@ -96,17 +109,26 @@ public class EvaControl implements Runnable{
 
     private void updateControllerGridWithBestFitnessSolution(){
         int bestFitness=0;
-        int bestFitnessIndex =0;
+        int bestFitnessIndex = -1;
+        ArrayList<Integer> fitnessList = new ArrayList<>();
         for(int i = 0; i<population.size();i++){
            if(population.get(i).getFitness()>bestFitness){
                bestFitness = population.get(i).getFitness();
                bestFitnessIndex=i;
+
            }
+            fitnessList.add(population.get(i).getFitness());
         }
-        System.out.println("#########################################");
-        System.out.println("BEST FITNES:::"+bestFitness);
-        System.out.println("#########################################");
-        controller.setMatrixToGridCells(population.get(bestFitnessIndex).getMatrix());
+        Collections.sort(fitnessList,Collections.reverseOrder());
+        System.out.println(fitnessList);
+        if(bestFitnessIndex>=0) {
+            System.out.println(population.get(bestFitnessIndex).getFitness());
+            if (population.get(bestFitnessIndex).getFitness()> controller.getHighestFitness()) {
+                controller.setMatrixToGridCells(population.get(bestFitnessIndex).getMatrix());
+                controller.updateHighestFitness(population.get(bestFitnessIndex).getFitness());
+            }
+        }
+
     }
 
     private ArrayList<Solution> initPopulation(){
@@ -133,7 +155,7 @@ public class EvaControl implements Runnable{
         Solution (Matrix -> Chromosom)
         -> Selektion => Fitness durch so wenig Falsche Dominos wie möglich
         -> Mutation => random Domino posi tauschen
-        -> Crossover => Uniform?
+        -> crossOverUniform => Uniform?
         -> Turnament => % Chance durch fitness
              -> Matrix anzeigen
                     ->NEXT GENERATION
