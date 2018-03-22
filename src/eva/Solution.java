@@ -16,15 +16,17 @@ public class Solution {
     private Cell[][] matrix;
     private ArrayList<Section> sections;
     private boolean solved = false;
-
+    private MersenneTwister mt;
     public Solution() {
         chromaMatrix= new int[Configuration.GRID_SIZE][Configuration.GRID_SIZE];
+        mt = new MersenneTwister();
         this.fitness = 0;
-        matrix = MatrixCreator.createMatrixFromTask();
+        matrix = MatrixCreator.createEvaMatrixFromTask();
         sections = MatrixCreator.getSectionsOfLastMatrix();
         placeRandomDominos();
         calculateChromosom();
         calculateFitness();
+
 
     }
 
@@ -123,7 +125,7 @@ public class Solution {
                     fitnessValue+=50;
                 }
             }else {
-                fitnessValue-= Math.abs(sections.get(sectionIndex).getDominoCount()-2)*50;
+                //fitnessValue-= Math.abs(sections.get(sectionIndex).getDominoCount()-2)*50;
                 solved=false;
             }
         }
@@ -143,19 +145,16 @@ public class Solution {
                         }
                     }
 
-
                     if (x < 9) {
                         if (matrix[x + 1][y].isDominoSet()) {
                             otherDominosNextTo++;
                         }
                     }
-
                     if (y > 0) {
                         if (matrix[x][y - 1].isDominoSet()) {
                             otherDominosNextTo++;
                         }
                     }
-
                     if (y < 9) {
                         if (matrix[x][y + 1].isDominoSet()) {
                             otherDominosNextTo++;
@@ -165,7 +164,7 @@ public class Solution {
                     if(otherDominosNextTo == 0 ){
                         fitnessValue+=34;
                     }else{
-                        fitnessValue-=otherDominosNextTo*19;
+                        fitnessValue += Math.abs(3-otherDominosNextTo)*7;
                         solved=false;
                     }
                 }
@@ -178,6 +177,7 @@ public class Solution {
     private void initRandomDominos() {
         MersenneTwister mt = new MersenneTwister();
         int dominoCounter = 0;
+        int n = mt.nextInt(0,(((Configuration.GRID_SIZE*Configuration.GRID_SIZE)/2) -5));
         while (dominoCounter < sections.size()) {
 
             int x = mt.nextInt(0, Configuration.GRID_SIZE);
@@ -249,11 +249,9 @@ public class Solution {
     }
 
     public String toString(){
-        String str= "";
 
-        System.out.println("Fitness: "+fitness+" Matrix"+chromosomToString());
+        return "Fitness: "+fitness+" Matrix"+chromosomToString();
 
-        return str;
     }
 }
 

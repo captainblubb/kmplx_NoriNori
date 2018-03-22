@@ -1,6 +1,8 @@
 package gui;
 
 
+import Backtracking.BacktrackingManager;
+import Backtracking.CellBT;
 import base.Cell;
 import base.MatrixCreator;
 import eva.*;
@@ -9,7 +11,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import task.TaskData;
 
 import static configuration.Configuration.GRID_SIZE;
 import static configuration.Configuration.CELL_SIZE;
@@ -17,12 +18,16 @@ import static configuration.Configuration.CELL_SIZE;
 public class Controller implements IController {
 
     private int generation = 0;
-    private base.Cell[][] matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
+    private Cell[][] matrix = new base.Cell[GRID_SIZE][GRID_SIZE];
     private Thread evaThread;
     private EvaControl evaControl;
+    private int highestFitness=0;
 
     @FXML
     private GridPane grid;
+
+    @FXML
+    private Label highestFitnessLabel;
 
     @FXML
     private Label generationCounter;
@@ -38,7 +43,7 @@ public class Controller implements IController {
 
     public void initialize() {
         initGridConstraints();
-        matrix = MatrixCreator.createMatrixFromTask();
+        matrix = MatrixCreator.createEvaMatrixFromTask();
         setMatrixToGridCells(matrix);
 
     }
@@ -62,15 +67,24 @@ public class Controller implements IController {
         }
     }
 
+    public void setMatrixToGridCellsBT(CellBT[][] matrixInit) {
+        grid.getChildren().clear();
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                grid.add(matrixInit[i][j], i, j);
+            }
+        }
+    }
+
     @FXML
     private void startSimulation() {
         startButton.disableProperty().setValue(true);
         clearButton.disableProperty().setValue(true);
 
+       // BacktrackingManager btm = new BacktrackingManager(this);
         EvaControl evaControl = new EvaControl(this);
         evaThread = new Thread(evaControl);
         evaThread.start();
-
 
     }
 
@@ -90,6 +104,13 @@ public class Controller implements IController {
         updateGenerationLabel();
     }
 
+    public void updateHighestFitness(int fitness){
+        if(highestFitness<fitness){
+            highestFitness=fitness;
+            highestFitnessLabel.setText("Highest Fitness "+fitness);
+        }
+    }
+
     public void updateGenerationLabel() {
         generationCounter.setText("Generation: " + generation);
     }
@@ -101,8 +122,12 @@ public class Controller implements IController {
         generation = 0;
         generationCounter.setText("Generation: " + generation);
         matrix = new Cell[GRID_SIZE][GRID_SIZE];
-        setMatrixToGridCells(MatrixCreator.createMatrixFromTask());
+        setMatrixToGridCells(MatrixCreator.createEvaMatrixFromTask());
         startButton.disableProperty().setValue(false);
+    }
+
+    public int getHighestFitness(){
+        return highestFitness;
     }
 
     public Cell[][] getMatrix() {

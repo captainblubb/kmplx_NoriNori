@@ -1,42 +1,55 @@
-package base;
+package Backtracking;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+
+import base.Section;
+import configuration.Direction;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import java.awt.*;
+public class CellBT extends javafx.scene.layout.Pane {
 
-public class Cell extends javafx.scene.layout.Pane {
-
-
-    private Section section;
-    private boolean isDominoSet = false;
-    private Cell dominoSecondCell;
+    private Direction dominoPlacedDirection;
+    private SectionBT sectionBT;
     private int rowPos;
     private int colPos;
     private int topBorder,rightBorder,bottomBorder,leftBorder;
 
-    public Cell(int rowPos, int colPos ) {
+    public CellBT(int rowPos, int colPos ) {
         super();
         super.setStyle("-fx-background-color: lightgray;");
         drawBorder(1,1,1,1);
         this.colPos = colPos;
         this.rowPos = rowPos;
+        dominoPlacedDirection = Direction.NONE;
     }
 
-
-    public void drawBorder( int top, int right, int bottom, int left){
-        if(left>=0 && top>=0 && right>=0 &&bottom>=0){
-            super.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top,right,bottom,left))));
-            topBorder=top;
-            rightBorder=right;
-            bottomBorder=bottom;
-            leftBorder=left;
+    public boolean setDomino(Direction direction){
+        if (dominoPlacedDirection == Direction.NONE){
+            this.dominoPlacedDirection= direction;
+            setColor();
+            return true;
         }
+        return false;
     }
 
-    public Cell getDominoSecondCell() {
-        return dominoSecondCell;
+    public Direction getDominoPlacedDirection() {
+        return dominoPlacedDirection;
+    }
+
+    public int getRowPos() {
+        return rowPos;
+    }
+
+    public int getColPos() {
+        return colPos;
+    }
+
+    public void setSectionBT(SectionBT sectionBT){
+        this.sectionBT = sectionBT;
+    }
+
+    public SectionBT getSectionBT(){
+        return sectionBT;
     }
 
     public boolean isDominoLeftPlaceable(){
@@ -53,17 +66,6 @@ public class Cell extends javafx.scene.layout.Pane {
         return true;
     }
 
-    public Section getSection() {
-        if(section!=null) {
-            return section;
-        }
-        throw new IllegalStateException("secion null in Cell.getSection()");
-    }
-
-    public void setSection(Section section) {
-        this.section = section;
-    }
-
     public boolean isDominoTopPlaceable(){
         if(colPos==0){
             return false;
@@ -76,6 +78,20 @@ public class Cell extends javafx.scene.layout.Pane {
             return false;
         }
         return true;
+    }
+
+    public void setDominoPlacedDirection(Direction dominoPlacedDirection){
+        this.dominoPlacedDirection = dominoPlacedDirection;
+    }
+
+    public void drawBorder( int top, int right, int bottom, int left){
+        if(left>=0 && top>=0 && right>=0 &&bottom>=0){
+            super.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(top,right,bottom,left))));
+            topBorder=top;
+            rightBorder=right;
+            bottomBorder=bottom;
+            leftBorder=left;
+        }
     }
 
     public void drawBorderLeft(int left){
@@ -106,45 +122,8 @@ public class Cell extends javafx.scene.layout.Pane {
         }
     }
 
-    public int getRowPos() {
-        return rowPos;
-    }
-
-    public int getColPos() {
-        return colPos;
-    }
-
-    public Boolean setDomino(Cell secondCell){
-        if(!isDominoSet && 1==(Math.abs((secondCell.getColPos()+secondCell.getRowPos()-(colPos+rowPos))))) {
-            dominoSecondCell = secondCell;
-            isDominoSet = true;
-            section.increaseDominoCount();
-            setColor();
-            return true;
-        }
-        return false;
-    }
-
-    public Cell removeDomino() {
-        if (isDominoSet) {
-            isDominoSet = false;
-            section.decreaseDominoCount();
-            setColor();
-            return dominoSecondCell;
-        }
-        return null;
-    }
-
-    public boolean isDominoSet() {
-        return isDominoSet;
-    }
-
-    public void setDominoSet(boolean dominoSet) {
-        isDominoSet = dominoSet;
-    }
-
     private void setColor(){
-        if(isDominoSet) {
+        if(dominoPlacedDirection != Direction.NONE) {
             super.setStyle("-fx-background-color: Red");
             // super.setStyle("-fx-background-image: url('/resouces/Domino.png')");
         }else{
